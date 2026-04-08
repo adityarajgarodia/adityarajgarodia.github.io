@@ -1,0 +1,612 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aditya Raj Garodia — Designer & Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #1e1e1e;
+    --border-mid: #2a2a2a;
+    --text: #f0ede8;
+    --muted: #6b6b6b;
+    --accent: #e8e0d0;
+    --red: #c0271f;
+    --red-light: #e03c33;
+    --mono: 'DM Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+  nav {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+
+  .nav-logo {
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+
+  .nav-links a {
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .reveal-delay-1 { transition-delay: 0.08s; }
+  .reveal-delay-2 { transition-delay: 0.16s; }
+  .reveal-delay-3 { transition-delay: 0.24s; }
+  .reveal-delay-4 { transition-delay: 0.32s; }
+
+  .hero { padding: 7rem 0 5rem; border-bottom: 1px solid var(--border); }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red-light);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-title {
+    font-family: var(--display);
+    font-size: clamp(42px, 7vw, 76px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 2rem;
+  }
+
+  .hero-title .dim { color: var(--muted); }
+
+  .hero-body {
+    max-width: 480px;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-fill { background: var(--text); color: var(--bg); border: 1px solid var(--text); }
+  .btn-fill:hover { background: var(--accent); }
+  .btn-outline { background: transparent; color: var(--muted); border: 1px solid var(--border-mid); }
+  .btn-outline:hover { color: var(--text); border-color: var(--muted); }
+
+  section { padding: 5rem 0; border-bottom: 1px solid var(--border); }
+
+  .section-header { display: flex; align-items: baseline; gap: 1.5rem; margin-bottom: 3rem; }
+  .section-num { font-size: 11px; color: var(--red-light); letter-spacing: 0.08em; }
+  .section-title { font-family: var(--display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .service-item { background: var(--bg); padding: 2rem 1.75rem; transition: background 0.2s; }
+  .service-item:hover { background: var(--surface); }
+  .service-tag { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red-light); margin-bottom: 1rem; }
+  .service-name { font-family: var(--display); font-size: 17px; font-weight: 700; margin-bottom: 0.75rem; letter-spacing: -0.01em; }
+  .service-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .service-items { margin-top: 1rem; display: flex; flex-direction: column; gap: 4px; }
+  .service-items span { font-size: 12px; color: var(--muted); }
+  .service-items span::before { content: '— '; color: var(--border-mid); }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .portfolio-item {
+    background: var(--surface);
+    aspect-ratio: 16/10;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .portfolio-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0.9;
+    transition: opacity 0.3s, transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .portfolio-item:hover img { opacity: 1; transform: scale(1.03); }
+
+  .portfolio-video-thumb {
+    width: 100%; height: 100%;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .portfolio-video-thumb:hover { background: #161616; }
+
+  .play-btn {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 1px solid var(--border-mid);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .portfolio-video-thumb:hover .play-btn { border-color: var(--red-light); transform: scale(1.08); }
+
+  .play-icon {
+    width: 0; height: 0;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-left: 16px solid var(--muted);
+    margin-left: 3px;
+    transition: border-left-color 0.2s;
+  }
+
+  .portfolio-video-thumb:hover .play-icon { border-left-color: var(--red-light); }
+
+  .video-label { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; text-align: center; padding: 0 1rem; }
+  .video-sublabel { font-size: 11px; color: var(--border-mid); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .portfolio-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex; align-items: flex-end;
+    padding: 1.25rem;
+    pointer-events: none;
+  }
+
+  .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+  .portfolio-meta { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; }
+  .portfolio-label { font-family: var(--display); font-size: 14px; font-weight: 700; color: #fff; }
+  .portfolio-type {
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--red-light); background: rgba(192,39,31,0.15);
+    padding: 3px 8px; border-radius: 2px;
+  }
+
+  .pricing-box {
+    border: 1px solid var(--border-mid);
+    border-radius: 4px; padding: 3rem;
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 3rem; align-items: center;
+    background: var(--surface);
+  }
+
+  .pricing-main-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red-light); margin-bottom: 1rem; }
+  .pricing-heading { font-family: var(--display); font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; }
+  .pricing-body { font-size: 13px; color: var(--muted); line-height: 1.8; max-width: 420px; }
+  .pricing-note { margin-top: 1.25rem; font-size: 11px; color: var(--border-mid); border-top: 1px solid var(--border); padding-top: 1rem; letter-spacing: 0.04em; }
+
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 4px;
+    overflow: hidden; margin-bottom: 1px;
+  }
+
+  .contact-field { background: var(--bg); }
+
+  .contact-field input, .contact-field textarea {
+    width: 100%; background: transparent; border: none; outline: none;
+    font-family: var(--mono); font-size: 13px; color: var(--text);
+    padding: 1.25rem 1.5rem; resize: none;
+  }
+
+  .contact-field input::placeholder, .contact-field textarea::placeholder { color: var(--muted); }
+  .contact-field.full { grid-column: 1 / -1; }
+  .contact-field textarea { min-height: 120px; }
+
+  .contact-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 1.5rem; }
+  .contact-note { font-size: 12px; color: var(--muted); }
+
+  .marquee-wrap {
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    background: var(--surface);
+  }
+
+  .marquee-track {
+    display: flex; gap: 3rem;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+  }
+
+  .marquee-track span { font-family: var(--display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
+  .marquee-track span.dot { color: var(--red-light); }
+
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .testimonial-card {
+    background: var(--bg);
+    padding: 2rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+    transition: background 0.2s;
+  }
+
+  .testimonial-card:hover { background: var(--surface); }
+
+  .testimonial-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+    font-style: italic;
+  }
+
+  .testimonial-text::before { content: '"'; color: var(--red-light); font-style: normal; font-size: 18px; line-height: 0; vertical-align: -4px; margin-right: 2px; }
+
+  .testimonial-author { border-top: 1px solid var(--border); padding-top: 1rem; }
+  .testimonial-name { font-family: var(--display); font-size: 13px; font-weight: 700; }
+  .testimonial-role { font-size: 11px; color: var(--muted); margin-top: 2px; letter-spacing: 0.02em; }
+
+  @media (max-width: 680px) { .testimonials-grid { grid-template-columns: 1fr; } }
+  .footer-name { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--muted); }
+  .footer-right { font-size: 11px; color: var(--border-mid); letter-spacing: 0.06em; }
+
+  @media (max-width: 680px) {
+    .services-grid, .portfolio-grid, .contact-grid { grid-template-columns: 1fr; }
+    .pricing-box { grid-template-columns: 1fr; gap: 1.5rem; padding: 2rem; }
+    .hero-title { font-size: 38px; }
+    .nav-links { gap: 1.5rem; }
+    .nav-status { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">ARG</a>
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact">Contact</a>
+      <div class="nav-status">
+        <div class="status-dot"></div>
+        Open for gigs
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="hero">
+    <p class="hero-eyebrow reveal">Visual Design · Video Editing · Creative Direction</p>
+    <h1 class="hero-title reveal reveal-delay-1">Design that<br>speaks.<br><span class="dim">Motion that sells.</span></h1>
+    <p class="hero-body reveal reveal-delay-2">Brand visuals, event creatives, and video edits for startups and small businesses that want to look the part — without the agency price tag.</p>
+    <div class="hero-actions reveal reveal-delay-3">
+      <a href="#contact" class="btn btn-fill">Get in touch →</a>
+      <a href="#work" class="btn btn-outline">See work</a>
+    </div>
+  </div>
+</div>
+
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>Graphic Design</span><span class="dot">✦</span>
+    <span>Video Editing</span><span class="dot">✦</span>
+    <span>Creative Direction</span><span class="dot">✦</span>
+    <span>Concept Development</span><span class="dot">✦</span>
+    <span>Brand Visuals</span><span class="dot">✦</span>
+    <span>Event Creatives</span><span class="dot">✦</span>
+    <span>Short-form Content</span><span class="dot">✦</span>
+    <span>Cinematic Edits</span><span class="dot">✦</span>
+    <span>Graphic Design</span><span class="dot">✦</span>
+    <span>Video Editing</span><span class="dot">✦</span>
+    <span>Creative Direction</span><span class="dot">✦</span>
+    <span>Concept Development</span><span class="dot">✦</span>
+    <span>Brand Visuals</span><span class="dot">✦</span>
+    <span>Event Creatives</span><span class="dot">✦</span>
+    <span>Short-form Content</span><span class="dot">✦</span>
+    <span>Cinematic Edits</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <section id="services">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <span class="section-title">What I do</span>
+    </div>
+    <div class="services-grid">
+      <div class="service-item reveal reveal-delay-1">
+        <div class="service-tag">Static</div>
+        <div class="service-name">Graphic Design</div>
+        <div class="service-desc">Clean, purposeful visuals built around your brand.</div>
+        <div class="service-items">
+          <span>Event posters & creatives</span>
+          <span>Social media graphics</span>
+          <span>Campaign visuals</span>
+          <span>Brand collateral</span>
+        </div>
+      </div>
+      <div class="service-item reveal reveal-delay-2">
+        <div class="service-tag">Motion</div>
+        <div class="service-name">Video Editing</div>
+        <div class="service-desc">Short-form and cinematic edits that hold attention.</div>
+        <div class="service-items">
+          <span>Brand & product reels</span>
+          <span>Founder content</span>
+          <span>Event recaps</span>
+          <span>Cinematic trailers</span>
+        </div>
+      </div>
+      <div class="service-item reveal reveal-delay-3">
+        <div class="service-tag">Ideation</div>
+        <div class="service-name">Creative Direction</div>
+        <div class="service-desc">Original concepts and visual storytelling from scratch — not borrowed ideas.</div>
+        <div class="service-items">
+          <span>Concept development</span>
+          <span>Visual narrative</span>
+          <span>Campaign direction</span>
+          <span>Content strategy</span>
+        </div>
+      </div>
+    </div>
+    <div class="services-grid" style="margin-top:1px;">
+      <div class="service-item reveal reveal-delay-1" style="grid-column: 1 / -1;">
+        <div class="service-tag">Web</div>
+        <div class="service-name">Website Design & Development</div>
+        <div class="service-desc">Clean, fast, mobile-ready websites — like this one. Built for founders and small businesses that need a sharp online presence without agency overhead.</div>
+        <div class="service-items" style="flex-direction:row; flex-wrap:wrap; gap: 8px 2rem;">
+          <span>Portfolio sites</span>
+          <span>Landing pages</span>
+          <span>Brand websites</span>
+          <span>Single-page apps</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <span class="section-title">Selected work</span>
+    </div>
+    <div class="portfolio-grid">
+
+      <div class="portfolio-item reveal reveal-delay-1">
+        <img src="jamming_session.png" alt="Jamming Session event poster" />
+        <div class="portfolio-overlay">
+          <div class="portfolio-meta">
+            <span class="portfolio-label">Jamming Session</span>
+            <span class="portfolio-type">Design</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="portfolio-item reveal reveal-delay-2">
+        <img src="reverse_info.png" alt="Reverse Tank infographic" />
+        <div class="portfolio-overlay">
+          <div class="portfolio-meta">
+            <span class="portfolio-label">Reverse Tank</span>
+            <span class="portfolio-type">Design</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="portfolio-item reveal reveal-delay-3">
+        <!-- paste bforum_reel_final share link below -->
+        <a class="portfolio-video-thumb" href="https://drive.google.com/file/d/1yOTCFpO52vigyWppm8SXiamWqUosQJyv/view?usp=share_link" target="_blank" rel="noopener">
+          <div class="play-btn"><div class="play-icon"></div></div>
+          <div class="video-label">Business Forum Reel</div>
+          <div class="video-sublabel">Concept & Direction — ARG</div>
+        </a>
+      </div>
+
+      <div class="portfolio-item reveal reveal-delay-4">
+        <!-- paste bweek_trailer_2026 share link below -->
+        <a class="portfolio-video-thumb" href="https://drive.google.com/file/d/1AK8HeZjUdfkcIXjjou1FHcBFnjTC4bB6/view?usp=share_link" target="_blank" rel="noopener">
+          <div class="play-btn"><div class="play-icon"></div></div>
+          <div class="video-label">Business Week Trailer 2026</div>
+          <div class="video-sublabel">Concept & Direction — ARG</div>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <span class="section-title">What clients say</span>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="testimonial-text">"Aditya understood the brief immediately and delivered something that looked better than what we imagined. Turnaround was fast, zero back and forth."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-name">Client Name</div>
+          <div class="testimonial-role">Founder, Startup Name</div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="testimonial-text">"The reel he made for our event got more engagement than anything we'd posted before. He doesn't just edit — he thinks about what will actually work."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-name">Client Name</div>
+          <div class="testimonial-role">Marketing Lead, Company</div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-3">
+        <div class="testimonial-text">"Straightforward to work with, knows his craft, and doesn't oversell. Exactly what you want from a freelancer."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-name">Client Name</div>
+          <div class="testimonial-role">Co-founder, Brand</div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:11px; color: var(--border-mid); margin-top: 1.5rem; letter-spacing:0.04em;">// Replace with real reviews as you get them.</p>
+  </section>
+
+  <section id="pricing">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <span class="section-title">Pricing</span>
+    </div>
+    <div class="pricing-box reveal">
+      <div>
+        <div class="pricing-main-label">How it works</div>
+        <div class="pricing-heading">Pricing on request.</div>
+        <div class="pricing-body">Every project is different — scope, turnaround, and deliverables all affect the final number. Reach out with what you need and I'll get back to you with a fair, no-nonsense quote within 24 hours.</div>
+        <div class="pricing-note">// Gig-based only. No retainers. No bloated packages.</div>
+      </div>
+      <a href="#contact" class="btn btn-fill">Request a quote →</a>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="section-header reveal">
+      <span class="section-num">05</span>
+      <span class="section-title">Get in touch</span>
+    </div>
+    <div class="contact-grid reveal">
+      <div class="contact-field">
+        <input type="text" placeholder="// Your name" />
+      </div>
+      <div class="contact-field">
+        <input type="text" placeholder="// Email or Instagram" />
+      </div>
+      <div class="contact-field full">
+        <input type="text" placeholder="// What do you need? (design / video / both)" />
+      </div>
+      <div class="contact-field full">
+        <textarea placeholder="// Brief, timeline, references — anything helps"></textarea>
+      </div>
+    </div>
+    <div class="contact-bottom reveal">
+      <span class="contact-note">I typically respond within 24 hours.</span>
+      <button class="btn btn-fill">Send message →</button>
+    </div>
+  </section>
+
+  <footer class="reveal">
+    <span class="footer-name">Aditya Raj Garodia</span>
+    <span class="footer-right">Bangalore — 2026</span>
+  </footer>
+
+</div>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
